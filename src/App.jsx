@@ -1,8 +1,9 @@
-import { useState } from 'react'
-import { Table } from './components/Table'
+import { useState, useEffect } from 'react';
+import { Table } from './components/Table';
+import './styles.css'
+import '.././global.css'
 
 function App() {
-
   const oldTestment = [
     { name: "Gênesis", chapters: 50 },
     { name: "Êxodo", chapters: 40 },
@@ -43,37 +44,7 @@ function App() {
     { name: "Ageu", chapters: 2 },
     { name: "Zacarias", chapters: 14 },
     { name: "Malaquias", chapters: 4 }
-  ]
-
-  const newTestment = [
-    { name: "Mateus", chapters: 28 },
-    { name: "Marcos", chapters: 16 },
-    { name: "Lucas", chapters: 24 },
-    { name: "João", chapters: 21 },
-    { name: "Atos", chapters: 28 },
-    { name: "Romanos", chapters: 16 },
-    { name: "1 Coríntios", chapters: 16 },
-    { name: "2 Coríntios", chapters: 13 },
-    { name: "Gálatas", chapters: 6 },
-    { name: "Efésios", chapters: 6 },
-    { name: "Filipenses", chapters: 4 },
-    { name: "Colossenses", chapters: 4 },
-    { name: "1 Tessalonicenses", chapters: 5 },
-    { name: "2 Tessalonicenses", chapters: 3 },
-    { name: "1 Timóteo", chapters: 6 },
-    { name: "2 Timóteo", chapters: 4 },
-    { name: "Tito", chapters: 3 },
-    { name: "Filemom", chapters: 1 },
-    { name: "Hebreus", chapters: 13 },
-    { name: "Tiago", chapters: 5 },
-    { name: "1 Pedro", chapters: 5 },
-    { name: "2 Pedro", chapters: 3 },
-    { name: "1 João", chapters: 5 },
-    { name: "2 João", chapters: 1 },
-    { name: "3 João", chapters: 1 },
-    { name: "Judas", chapters: 1 },
-    { name: "Apocalipse", chapters: 22 }
-  ]
+  ];
 
   const monthsOf25 = [
     { name: 'Janeiro', days: 31 },
@@ -88,114 +59,62 @@ function App() {
     { name: 'Outubro', days: 31 },
     { name: 'Novembro', days: 30 },
     { name: 'Dezembro', days: 31 }
-  ]
-
-  let countDays = 0;
-  let remainingChapters = [];
-  let previousBook = "";
+  ];
 
   function returningChaptersOfBooks() {
-    let remainingChapters = [];
-    let previousBook = "";
-    let currentDay = 15; // Começa em 15 de março
+    let currentDay = 15;
     let currentMonthIndex = monthsOf25.findIndex(month => month.name === "Março");
-
     let startBookIndex = oldTestment.findIndex(book => book.name === "Números");
     let startChapter = 15;
+    let readingPlan = [];
 
-    for (let i = startBookIndex; i < oldTestment.length; i++) {
-      let book = oldTestment[i];
-      let bookChapters = book.chapters;
-      let currentChapter = i === startBookIndex ? startChapter : 1;
+    let i = startBookIndex;
+    let currentChapter = startChapter;
+    while (i < oldTestment.length) {
+      let chaptersToRead = [];
+      let currentBook = oldTestment[i];
 
-      while (currentChapter <= bookChapters) {
-        let chaptersToRead = [];
-        let bookNames = [];
-
-        // Se houver capítulos pendentes do livro anterior, leia primeiro
-        if (remainingChapters.length > 0) {
-          chaptersToRead = [...remainingChapters];
-          bookNames.push(previousBook);
-          remainingChapters = [];
+      while (chaptersToRead.length < 3) {
+        if (currentChapter > currentBook.chapters) {
+          i++;
+          if (i >= oldTestment.length) break;
+          currentBook = oldTestment[i];
+          currentChapter = 1;
         }
+        chaptersToRead.push(currentChapter);
+        currentChapter++;
+      }
 
-        // Preenche o restante do dia com capítulos do livro atual
-        while (chaptersToRead.length < 3 && currentChapter <= bookChapters) {
-          chaptersToRead.push(currentChapter);
-          bookNames.push(book.name);
-          currentChapter++;
-        }
+      readingPlan.push({
+        day: currentDay,
+        month: monthsOf25[currentMonthIndex].name,
+        chapters: `${currentBook.name} - ${chaptersToRead.join(", ")}`
+      });
 
-        // Remove duplicatas no nome do livro
-        bookNames = [...new Set(bookNames)];
-
-        // Evita repetir os últimos capítulos de um livro no dia seguinte
-        if (chaptersToRead.length < 3 && i < oldTestment.length - 1) {
-          remainingChapters = [...chaptersToRead];
-          previousBook = book.name;
-          continue; // Pula para o próximo livro sem imprimir o dia incompleto
-        }
-
-        // Obtém o nome do mês atual
-        let currentMonth = monthsOf25[currentMonthIndex].name;
-
-        console.log(
-          `${currentDay} de ${currentMonth} ---> ${bookNames.map((b, index) =>
-            `${b} - ${chaptersToRead.slice(index * 3, (index + 1) * 3).join(", ")}`).join(" | ")}`
-        );
-
-        // **Parar no último capítulo de Malaquias**
-        if (book.name === "Malaquias" && currentChapter > bookChapters) {
-          console.log("📖 Leitura do Antigo Testamento concluída!");
-          return;
-        }
-
-        // Avança para o próximo dia e mês, se necessário
-        currentDay++;
-        if (currentDay > monthsOf25[currentMonthIndex].days) {
-          currentDay = 1;
-          currentMonthIndex++;
-        }
+      currentDay++;
+      if (currentDay > monthsOf25[currentMonthIndex].days) {
+        currentDay = 1;
+        currentMonthIndex++;
       }
     }
+
+    return readingPlan;
   }
 
-
-
-  returningChaptersOfBooks();
-
-  function joinBooks() {
-
-  }
-
-  function generatingReadingPlan() {
-    let count = 0
-    for (let i = 0; i < monthsOf25.length; i++) {
-      //console.log(monthsOf25[i].name)
-      let days = monthsOf25[i].days
-      console.log(`----------${monthsOf25[i].name}----------`)
-      for (let j = 1; j <= days; j++) {
-        console.log(j)
-        count++
-      }
-    }
-    console.log(`Número de dias: ${count}`)
-  }
-
-  /* generatingReadingPlan() */
-  returningChaptersOfBooks()
+  const readingPlan = returningChaptersOfBooks();
 
   return (
-    <div>
-      <h1>Leitura Bíblica Anual</h1>
-      <ul>
-        {oldTestment.map(book => {
-          return <li>{book.name} - {book.chapters}</li>
-        })}
-      </ul>
-      <Table />
+    <div className='bg-light'>
+      <h1 className='d-flex justify-content-center p-3'>Leitura Bíblica Anual</h1>
+      <div className='d-flex justify-content-center align-items-start flex-wrap'>
+        {monthsOf25.map((month, monthIndex) => (
+          <div key={monthIndex}>
+            <Table readingPlan={readingPlan} month={month} />
+          </div>
+        ))}
+      </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

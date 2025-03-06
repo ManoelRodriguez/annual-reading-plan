@@ -1,23 +1,29 @@
-export function Table() {
+import './styles.css'
+
+export function Table({ readingPlan, month }) {
     return (
-        <div>
-            <h1>Mês Selecionado</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Dia</th>
-                        <th>Capítulos</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th>01</th>
-                        <th>Genesis 1, 2, 3</th>
-                        <th>Concluído</th>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        month.name !== 'Janeiro' && month.name !== 'Fevereiro' ? (
+            <div>
+                <h2 className='month-title'>{month.name}</h2>
+                <table className='table table-hover border rounded-3 table'>
+                    <thead>
+                        <tr className='table-dark'>
+                            <th className='th-head'>Dia</th>
+                            <th>Capítulos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {readingPlan
+                            .filter(item => item.month === month.name)
+                            .map((item, index) => (
+                                <tr key={index} className='table-ligth'>
+                                    <td>{item.day}</td>
+                                    <td>{item.chapters}</td>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
+            </div>
+        ) : null
     )
 }

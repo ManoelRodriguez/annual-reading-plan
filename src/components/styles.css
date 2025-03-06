@@ -1,0 +1,11 @@
+.table {
+  border-radius: 12px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden; /* Garante que as bordas fiquem corretas */
+
+  width: 300px;
+}
+
+.th-head {
+}
