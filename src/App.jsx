@@ -98,7 +98,7 @@ function App() {
     let oldTestamentIndex = oldTestment.findIndex(book => book.name === "Números");
     let oldTestamentChapter = 15;
 
-    let newTestamentIndex = 0;
+    let newTestamentIndex = newTestament.findIndex(book => book.name === "Marcos");
     let newTestamentChapter = 1;
 
     let readingPlan = [];
