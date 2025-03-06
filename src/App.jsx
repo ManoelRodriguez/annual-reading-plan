@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Table } from './components/Table';
+import { Table } from './components/Table/Table';
 import './styles.css'
 import '.././global.css'
+import { Navbar } from './components/Navbar/Navbar';
 
 function App() {
   const oldTestment = [
@@ -169,8 +169,8 @@ function App() {
 
   return (
     <div className='bg-light'>
-      <h1 className='d-flex justify-content-center p-3'>Leitura Bíblica Anual</h1>
-      <div className='d-flex justify-content-center align-items-start flex-wrap'>
+      <Navbar />
+      <div className='d-flex justify-content-center align-items-start flex-wrap mt-4'>
         {monthsOf25.map((month, monthIndex) => (
           <div key={monthIndex}>
             <Table readingPlan={readingPlan} month={month} />
