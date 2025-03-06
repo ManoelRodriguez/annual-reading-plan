@@ -46,6 +46,36 @@ function App() {
     { name: "Malaquias", chapters: 4 }
   ];
 
+  const newTestament = [
+    { name: "Mateus", chapters: 28 },
+    { name: "Marcos", chapters: 16 },
+    { name: "Lucas", chapters: 24 },
+    { name: "João", chapters: 21 },
+    { name: "Atos", chapters: 28 },
+    { name: "Romanos", chapters: 16 },
+    { name: "1 Coríntios", chapters: 16 },
+    { name: "2 Coríntios", chapters: 13 },
+    { name: "Gálatas", chapters: 6 },
+    { name: "Efésios", chapters: 6 },
+    { name: "Filipenses", chapters: 4 },
+    { name: "Colossenses", chapters: 4 },
+    { name: "1 Tessalonicenses", chapters: 5 },
+    { name: "2 Tessalonicenses", chapters: 3 },
+    { name: "1 Timóteo", chapters: 6 },
+    { name: "2 Timóteo", chapters: 4 },
+    { name: "Tito", chapters: 3 },
+    { name: "Filemom", chapters: 1 },
+    { name: "Hebreus", chapters: 13 },
+    { name: "Tiago", chapters: 5 },
+    { name: "1 Pedro", chapters: 5 },
+    { name: "2 Pedro", chapters: 3 },
+    { name: "1 João", chapters: 5 },
+    { name: "2 João", chapters: 1 },
+    { name: "3 João", chapters: 1 },
+    { name: "Judas", chapters: 1 },
+    { name: "Apocalipse", chapters: 22 }
+  ];
+
   const monthsOf25 = [
     { name: 'Janeiro', days: 31 },
     { name: 'Fevereiro', days: 28 },
@@ -64,31 +94,63 @@ function App() {
   function returningChaptersOfBooks() {
     let currentDay = 15;
     let currentMonthIndex = monthsOf25.findIndex(month => month.name === "Março");
-    let startBookIndex = oldTestment.findIndex(book => book.name === "Números");
-    let startChapter = 15;
+
+    let oldTestamentIndex = oldTestment.findIndex(book => book.name === "Números");
+    let oldTestamentChapter = 15;
+
+    let newTestamentIndex = 0;
+    let newTestamentChapter = 1;
+
     let readingPlan = [];
 
-    let i = startBookIndex;
-    let currentChapter = startChapter;
-    while (i < oldTestment.length) {
-      let chaptersToRead = [];
-      let currentBook = oldTestment[i];
+    while (oldTestamentIndex < oldTestment.length || newTestamentIndex < newTestament.length) {
+      let oldChapters = [];
+      let currentBookName = oldTestment[oldTestamentIndex]?.name || "";
 
-      while (chaptersToRead.length < 3) {
-        if (currentChapter > currentBook.chapters) {
-          i++;
-          if (i >= oldTestment.length) break;
-          currentBook = oldTestment[i];
-          currentChapter = 1;
+      // Leitura do Antigo Testamento (3 capítulos por dia)
+      while (oldChapters.length < 3 && oldTestamentIndex < oldTestment.length) {
+        let currentBook = oldTestment[oldTestamentIndex];
+
+        if (oldTestamentChapter > currentBook.chapters) {
+          oldTestamentIndex++;
+          oldTestamentChapter = 1;
+          if (oldTestamentIndex >= oldTestment.length) break;
+          currentBook = oldTestment[oldTestamentIndex];
+          currentBookName = currentBook.name;
         }
-        chaptersToRead.push(currentChapter);
-        currentChapter++;
+
+        oldChapters.push(oldTestamentChapter);
+        oldTestamentChapter++;
       }
 
+      // Formatação para evitar repetição do nome do livro
+      let formattedOldTestament = oldChapters.length > 0 ? `${currentBookName} ${oldChapters.join(", ")}` : "";
+
+      // Leitura do Novo Testamento (1 capítulo por dia)
+      let newChapterEntry = null;
+      if (newTestamentIndex < newTestament.length) {
+        let newBook = newTestament[newTestamentIndex];
+
+        if (newTestamentChapter > newBook.chapters) {
+          newTestamentIndex++;
+          newTestamentChapter = 1;
+          if (newTestamentIndex < newTestament.length) {
+            newBook = newTestament[newTestamentIndex];
+          }
+        }
+
+        if (newTestamentIndex < newTestament.length) {
+          newChapterEntry = `${newBook.name} ${newTestamentChapter}`;
+          newTestamentChapter++;
+        }
+      }
+
+      // Criar entrada para o plano de leitura
       readingPlan.push({
         day: currentDay,
         month: monthsOf25[currentMonthIndex].name,
-        chapters: `${currentBook.name} - ${chaptersToRead.join(", ")}`
+        oldTestament: formattedOldTestament,
+        newTestament: newChapterEntry
       });
 
       currentDay++;
@@ -100,6 +162,8 @@ function App() {
 
     return readingPlan;
   }
+
+
 
   const readingPlan = returningChaptersOfBooks();
 

@@ -5,25 +5,27 @@ export function Table({ readingPlan, month }) {
         month.name !== 'Janeiro' && month.name !== 'Fevereiro' ? (
             <div>
                 <h2 className='month-title'>{month.name}</h2>
-                <table className='table table-hover border rounded-3 table'>
+                <table className='table table-hover border rounded-3'>
                     <thead>
                         <tr className='table-dark'>
                             <th className='th-head'>Dia</th>
-                            <th>Capítulos</th>
+                            <th>Antigo Testamento</th>
+                            <th>Novo Testamento</th>
                         </tr>
                     </thead>
                     <tbody>
                         {readingPlan
                             .filter(item => item.month === month.name)
                             .map((item, index) => (
-                                <tr key={index} className='table-ligth'>
+                                <tr key={index}>
                                     <td>{item.day}</td>
-                                    <td>{item.chapters}</td>
+                                    <td>{item.oldTestament}</td>
+                                    <td>{item.newTestament}</td>
                                 </tr>
                             ))}
                     </tbody>
                 </table>
             </div>
         ) : null
-    )
+    );
 }

@@ -4,7 +4,8 @@
   border-spacing: 0;
   overflow: hidden; /* Garante que as bordas fiquem corretas */
 
-  width: 300px;
+  width: 340px;
+  font-size: 14px;
 }
 
 .th-head {
